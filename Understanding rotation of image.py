@@ -1,50 +1,51 @@
 import numpy as np
 import cv2
 
-img1 = cv2.imread('images/scenery.jpeg')
+img1 = cv2.imread('images/e_19.jpeg')
 ##img1 = cv2.cvtColor(img1, cv2.COLOR_BGR2RGB)
 
-img2 = cv2.imread('images/pill_01.png')
-gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
-gray = cv2.GaussianBlur(gray, (3,3), 0)
-edged = cv2.Canny(gray, 20, 100)
+img2 = cv2.imread('images/5_2.jpeg')
+##gray = cv2.cvtColor(img2, cv2.COLOR_BGR2GRAY)
+##gray = cv2.GaussianBlur(gray, (3,3), 0)
+##edged = cv2.Canny(gray, 20, 100)
 
-##cv2.imshow('edged',edged)
+cv2.imshow('edged',img2)
 
-cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
-                        cv2.CHAIN_APPROX_SIMPLE)
-cnts = cnts[1]
-
-if len(cnts) > 0:
-    # grab the largest contour, then draw a mask for the pill
-    c = max(cnts, key=cv2.contourArea)
-    mask = np.zeros(gray.shape, dtype="uint8")
-    cv2.drawContours(mask, [c], -1, 255, -1)
- 
-    # compute its bounding box of pill, then extract the ROI,
-    # and apply the mask
-    (x, y, w, h) = cv2.boundingRect(c)
-    imageROI = img2[y:y + h, x:x + w]
-    maskROI = mask[y:y + h, x:x + w]
-    imageROI = cv2.bitwise_and(imageROI, imageROI, mask=maskROI)
+##cnts = cv2.findContours(edged.copy(), cv2.RETR_EXTERNAL,
+##                        cv2.CHAIN_APPROX_SIMPLE)
+##cnts = cnts[1]
+##
+##if len(cnts) > 0:
+##    # grab the largest contour, then draw a mask for the pill
+##    c = max(cnts, key=cv2.contourArea)
+##    mask = np.zeros(gray.shape, dtype="uint8")
+##    cv2.drawContours(mask, [c], -1, 255, -1)
+## 
+##    # compute its bounding box of pill, then extract the ROI,
+##    # and apply the mask
+##    (x, y, w, h) = cv2.boundingRect(c)
+##    imageROI = img2[y:y + h, x:x + w]
+##    maskROI = mask[y:y + h, x:x + w]
+##    imageROI = cv2.bitwise_and(imageROI, imageROI, mask=maskROI)
 
 ##cv2.imshow('ffk', imageROI)
 
-r1, c1, _ = imageROI.shape
+r1, c1, _ = img2.shape
 
-M = cv2.getRotationMatrix2D((r1/2, c1/2), 90, 1)
-img = cv2.warpAffine(imageROI, M, (r1, c1))
+##M = cv2.getRotationMatrix2D((r1/2, c1/2), 90, 1)
+##img = cv2.warpAffine(imageROI, M, (r1, c1))
+angles = [-30,60, -60]
 
-##count = 1
-##for angle in np.arange(0, 360, 30):
-##    print("angle is: ", angle)
-##    M = cv2.getRotationMatrix2D((r1/2, c1/2), angle, 1)
-##    img = cv2.warpAffine(img1, M, (r1, c1))
-##    cv2.imwrite('rotate_{}.jpeg'.format(count), img)
-##    cv2.imshow('img', img)
-##    count+=1
-##    cv2.waitKey(0)
-##
+count = 1
+for angle in angles:
+    print("angle is: ", angle)
+    M = cv2.getRotationMatrix2D((r1/2, c1/2), angle, 1)
+    img = cv2.warpAffine(img2, M, (r1, c1))
+    cv2.imwrite('rotate_{}.jpeg'.format(count), img)
+    cv2.imshow('img', img)
+    count+=1
+    cv2.waitKey(0)
+
 ##count = 1
 ##for angle in np.arange(0, 360, 30):
 ##    print("angle is: ", angle)
@@ -54,7 +55,7 @@ img = cv2.warpAffine(imageROI, M, (r1, c1))
 ##    cv2.imshow('img', img)
 ##    count+=1
 ##    cv2.waitKey(0)
-##	
+####	
 def rotate_bound(image, angle):
     # grab the dimensions of the image and then determine the
     # center
